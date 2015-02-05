@@ -3,10 +3,10 @@
 	<name>paynow</name>
 	<displayName><![CDATA[PayNow]]></displayName>
 	<version><![CDATA[1.0.0]]></version>
-	<description><![CDATA[Accept online payments through PayNow.]]></description>
-	<author><![CDATA[PayNow]]></author>
+	<description><![CDATA[Accept online payments through Sage Pay Now.]]></description>
+	<author><![CDATA[Sage PayNow]]></author>
 	<tab><![CDATA[payments_gateways]]></tab>
-	<confirmUninstall><![CDATA[Are you sure you want to delete your details ?]]></confirmUninstall>
+	<confirmUninstall><![CDATA[Are you sure you want to delete your details?]]></confirmUninstall>
 	<is_configurable>1</is_configurable>
 	<need_instance>1</need_instance>
 	<limited_countries></limited_countries>

@@ -290,8 +290,9 @@ class PayNow extends PaymentModule
         $data['paynow_align'] = Configuration::get('SAGEPAY_PAYNOW_ALIGN');
 
         // URLs
-        $return_vars = 'key='.$cart->secure_key.'&id_cart='.(int)($cart->id).'&id_module='.(int)($this->id);
-        // $data['info']['return_url'] = $this->context->link->getPageLink( 'order-confirmation', null, null, $return_vars);
+        $return_vars = 'key='.$cart->secure_key.'&id_cart='.(int)($cart->id).'&id_module='.(int)($this->id); //.'&return_url='.urlencode($this->context->link->getPageLink( 'order-confirmation', null, null, ''));
+        $return_url = $this->context->link->getPageLink( 'order-confirmation', null, null, $return_vars);
+        // $data['info']['return_url'] = $return_url
         $data['info']['cancel_url'] = Tools::getHttpHost( true ).__PS_BASE_URI__;
         $data['info']['notify_url'] = Tools::getHttpHost( true ).__PS_BASE_URI__.'modules/paynow/validation.php?itn_request=true';
 
