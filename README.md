@@ -39,7 +39,7 @@ Sage Pay Now Callback
 Sage Pay Now Plugin Installation and Activation
 
 7. Upload the contents of the downloaded ZIP archive to your site.
-	In _/modules/_ there should be a _paynow/_ folder and the root of the site should contain a _paynow\_callback.php_ file.
+	In _/modules/_ there should be a _paynow/_ folder.
 	No files should be overriden.
 8. Login to your PrestaShop website as admin
 
@@ -48,6 +48,7 @@ PrestaShop Configuration
 9. Select "Modules" > "Modules" in the admin menu.
 10. Look for or search for "PayNow" and click "Install".
 11. Put in you Service Key and click "Save".
+12. Turn off debugging if you're in a production/live environment.
 
 
 Revision History
@@ -55,6 +56,8 @@ Revision History
 
 * 03 Feb 2015/1.0.0
 ** Initial release
+* 04 Feb 2015/1.0.0
+** Fix URL inconsistencies
 
 Tested with PrestaShop v1.6.0.11
 
@@ -64,9 +67,9 @@ Issues / Feedback / Feature Requests
 
 Please do the following should you encounter any problems:
 
-* Ensure at Sage that your Accept and Decline URLs are just the site name, with "/paynow\_callback.php" appended.
+* Ensure at Sage that your Accept and Decline URLs are "http://www.example.com/modules/paynow/paynow\_callback.php".
 For example, if your site is 'www.mysite.co.za', use:
-http://www.mysite.co.za/paynow\_callback.php
+http://www.mysite.co.za/modules/paynow/paynow\_callback.php
 * There are three steps that will enable maximum debugging
 ** Enable Debugging in the Pay Now module
 
