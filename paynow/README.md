@@ -1,4 +1,4 @@
-Sage Pay Now PrestaShop Credit Card Payment Module 1.0.0
+Sage Pay Now PrestaShop Credit Card Payment Module 2.0.0
 =========================================================
 
 Introduction
@@ -33,8 +33,8 @@ Sage Pay Now Gateway Server Configuration Steps:
 
 Sage Pay Now Callback
 
-6. Choose both the following URLs for your Accept and Decline URLs:
-	http://www.your_domain_name.co.za/paynow_callback.php
+6. Choose the following URLs for your Notify, Redirect, Accept and Decline URLs:
+	http://www.your_domain_name.co.za/modules/paynow/paynow_callback.php
 
 Sage Pay Now Plugin Installation and Activation
 
@@ -54,6 +54,7 @@ PrestaShop Configuration
 Revision History
 ----------------
 
+* 19 Aug 2015/2.0.0 Add EFT and retail payment support
 * 03 Feb 2015/1.0.0
 ** Initial release
 * 04 Feb 2015/1.0.0

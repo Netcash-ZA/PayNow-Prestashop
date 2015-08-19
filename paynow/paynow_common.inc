@@ -23,7 +23,7 @@
 define( 'PN_SOFTWARE_NAME', 'PrestaShop' );
 define( 'PN_SOFTWARE_VER', Configuration::get('PS_INSTALL_VERSION') );
 define( 'PN_MODULE_NAME', 'PayNow-Prestashop' );
-define( 'PN_MODULE_VER', '1.0.0' );
+define( 'PN_MODULE_VER', '2.0.0' );
 define( 'PN_DEBUG', ( Configuration::get('SAGEPAY_LOGS')  ? true : false ) );
 
 // Features
@@ -323,8 +323,8 @@ function pnValidData( $pnParamString = '', $pnData, $pnProxy = null )
     // $verifyResult = trim( $lines[0] );
 
     if( $pnData['Method'] == 'CreditCard' ) {
-    $responseArray = json_decode($response, true);
-    pnlog( 'SagePayNow RequestTrace Response: '. print_r( $responseArray, true ) );
+        $responseArray = json_decode($response, true);
+        pnlog( 'SagePayNow RequestTrace Response: '. print_r( $responseArray, true ) );
     } else {
         // This is temporary.
         // Cannot verify via RequestTrace for Retail/EFT at this stage.
