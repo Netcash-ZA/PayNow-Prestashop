@@ -22,10 +22,37 @@ include( dirname(__FILE__).'/../../config/config.inc.php' );
 include( dirname(__FILE__).'/paynow.php' );
 include( dirname(__FILE__).'/paynow_common.inc' );
 
+$route = "index.php?controller=my-account";
+$url_for_redirect = _PS_BASE_URL_.__PS_BASE_URI__.$route;
+// die($url_for_redirect);
+
+if( isset($_POST) && !empty($_POST) ) {
+
+    // This is the notification OR CC payment coming in!
+    // Act as an IPN request and forward request to Credit Card method.
+    // Logic is exactly the same
+
+    // DO your thang
+    pn_do_transaction();
+    die();
+
+} else {
+    // Probably calling the "redirect" URL
+
+    pnlog(__FILE__ . ' Probably calling the "redirect" URL');
+
+    if( $url_for_redirect ) {
+        header ( "Location: {$url_for_redirect}" );
+    } else {
+        die( "No 'redirect' URL set." );
+    }
+}
+
 // Check if this is an ITN request
 // Has to be done like this (as opposed to "exit" as processing needs
 // to continue after this check.
 // if( ( $_GET['itn_request'] == 'true' ) ) {
+function pn_do_transaction() {
     // Variable Initialization
     $pnError = false;
     $pnErrMsg = '';
@@ -188,4 +215,4 @@ include( dirname(__FILE__).'/paynow_common.inc' );
     // Close log
     pnlog( '', true );
     // exit();
-// }
+}
