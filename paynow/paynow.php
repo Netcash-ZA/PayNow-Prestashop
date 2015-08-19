@@ -296,8 +296,18 @@ class PayNow extends PaymentModule
         $data['info']['cancel_url'] = Tools::getHttpHost( true ).__PS_BASE_URI__;
         $data['info']['notify_url'] = Tools::getHttpHost( true ).__PS_BASE_URI__.'modules/paynow/validation.php?itn_request=true';
 
+        $customerName = "{$customer->firstname} {$customer->lastname}";
+        $orderID = $cart->id;
+        $customerID = $cart->id_customer;
+        $sageGUID = "TBC";
+
+        $data['info']['p3'] = "{$customerName} | {$orderID}";
+        $data['info']['m3'] = $sageGUID;
+        $data['info']['m4'] = "{$customerID}";
+
+
         // First name
-        $data['info']['m4'] = $customer->firstname;
+        // $data['info']['m4'] = $customer->firstname;
         // Cart Id sent as Extra2
         $data['info']['m5'] = $cart->id;
         // Secure key (Returend as Extra3)
@@ -306,7 +316,7 @@ class PayNow extends PaymentModule
         // Unique Order Id
         $data['info']['p2'] = $cart->id . "_" . date("Ymds");
         // Item Name
-        $data['info']['p3'] = 'Purchase from ' . Configuration::get('PS_SHOP_NAME') .', Cart Item ID #'. $cart->id;
+        // $data['info']['p3'] = 'Purchase from ' . Configuration::get('PS_SHOP_NAME') .', Cart Item ID #'. $cart->id;
         // Price
         $data['info']['p4'] = number_format( sprintf( "%01.2f", $pnAmount ), 2, '.', '' );
 
