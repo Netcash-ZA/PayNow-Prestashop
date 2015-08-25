@@ -280,7 +280,7 @@ class PayNow extends PaymentModule
         }
 
         // Service Key
-        $software_vendor_key = '24ade73c-98cf-47b3-99be-cc7b867b3080';
+        $software_vendor_key = 'de2c157a-04fb-4cca-beb5-8aa20f686ac6';
         $data['info']['m1'] = Configuration::get('SAGEPAY_SERVICE_KEY');
         $data['info']['m2'] = $software_vendor_key;
         $data['paynow_url'] = 'https://paynow.sagepay.co.za/site/paynow.aspx';
@@ -299,10 +299,10 @@ class PayNow extends PaymentModule
         $customerName = "{$customer->firstname} {$customer->lastname}";
         $orderID = $cart->id;
         $customerID = $cart->id_customer;
-        $sageGUID = "TBC";
+        $sageGUID = $software_vendor_key;
 
         $data['info']['p3'] = "{$customerName} | {$orderID}";
-        $data['info']['m3'] = $sageGUID;
+        // $data['info']['m3'] = $sageGUID;
         $data['info']['m4'] = "{$customerID}";
 
 
