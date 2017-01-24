@@ -24,29 +24,6 @@ include( dirname(__FILE__).'/paynow_common.inc' );
 
 $route = "index.php?controller=my-account";
 $url_for_redirect = _PS_BASE_URL_.__PS_BASE_URI__.$route;
-// die($url_for_redirect);
-
-if( isset($_POST) && !empty($_POST) ) {
-
-    // This is the notification OR CC payment coming in!
-    // Act as an IPN request and forward request to Credit Card method.
-    // Logic is exactly the same
-
-    // DO your thang
-    pn_do_transaction();
-    die();
-
-} else {
-    // Probably calling the "redirect" URL
-
-    pnlog(__FILE__ . ' Probably calling the "redirect" URL');
-
-    if( $url_for_redirect ) {
-        header ( "Location: {$url_for_redirect}" );
-    } else {
-        die( "No 'redirect' URL set." );
-    }
-}
 
 // Check if this is an ITN request
 // Has to be done like this (as opposed to "exit" as processing needs
@@ -178,9 +155,14 @@ function pn_do_transaction() {
             case 'true':
                 pnlog( '- Complete' );
 
-                // Update the purchase status
-                $paynow->validateOrder((int)$pnData['Extra2'], _PS_OS_PAYMENT_, (float)$total ,
-                    $paynow->displayName, NULL, array('transaction_id'=>$transaction_id), NULL, false, $pnData['Extra3']);
+                $id_cart = (int)$pnData['Extra2'];
+                // Make sure order doesn't exist
+                if ($cart->OrderExists() === 0) {
+
+	                // Update the purchase status
+	                $paynow->validateOrder($id_cart, _PS_OS_PAYMENT_, (float)$total ,
+	                    $paynow->displayName, NULL, array('transaction_id'=>$transaction_id), NULL, false, $pnData['Extra3']);
+	            }
 
                 pnlog( '- Redirecting to order-confirmation' );
                 Tools::redirect('index.php?controller=order-confirmation&'.$_SERVER['QUERY_STRING']);
@@ -215,4 +197,26 @@ function pn_do_transaction() {
     // Close log
     pnlog( '', true );
     // exit();
+}
+
+if( isset($_POST) && !empty($_POST) ) {
+
+    // This is the notification OR CC payment coming in!
+    // Act as an IPN request and forward request to Credit Card method.
+    // Logic is exactly the same
+
+    // DO your thang
+    pn_do_transaction();
+    die();
+
+} else {
+    // Probably calling the "redirect" URL
+
+    pnlog(__FILE__ . ' Probably calling the "redirect" URL');
+
+    if( $url_for_redirect ) {
+        header ( "Location: {$url_for_redirect}" );
+    } else {
+        die( "No 'redirect' URL set." );
+    }
 }
