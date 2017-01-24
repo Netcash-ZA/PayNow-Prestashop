@@ -429,4 +429,3 @@ function pnAmountsEqual( $amount1, $amount2 )
         return( true );
 }
 // }}}
-?>
