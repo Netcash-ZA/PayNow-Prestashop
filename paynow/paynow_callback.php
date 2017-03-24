@@ -101,7 +101,7 @@ function pn_do_transaction() {
         // Get order data
         $cart = new Cart((int) $pnData['Extra2']);
 
-        pnlog( "Purchase:\n". print_r( $cart, true )  );
+        // pnlog( "Purchase:\n". print_r( $cart, true )  );
     }
 
     //// Verify data received
@@ -145,7 +145,7 @@ function pn_do_transaction() {
         pnlog( 'Check status and update order' );
 
         $sessionid = $pnData['Extra3'];
-        $transaction_id = $pnData['Extra2'];
+        $transaction_id = $pnData['Extra3']; // $pnData['Extra2']
 
         if (empty(Context::getContext()->link))
         Context::getContext()->link = new Link();
@@ -155,13 +155,20 @@ function pn_do_transaction() {
             case 'true':
                 pnlog( '- Complete' );
 
+                // Is Notify? Only notify posts back this reason
+                $is_notify = isset($pnData['Reason']) && $pnData['Reason'] == 'Success';
+
                 $id_cart = (int)$pnData['Extra2'];
                 // Make sure order doesn't exist
-                if ($cart->OrderExists() === 0) {
+                // if ($cart->OrderExists() === 0) { // See https://github.com/pal/prestashop/blob/master/classes/PaymentModule.php for 'An order has already been placed using this cart' errors
+                if ($is_notify) {
+                	pnlog( '- Updating status.' );
 
 	                // Update the purchase status
 	                $paynow->validateOrder($id_cart, _PS_OS_PAYMENT_, (float)$total ,
 	                    $paynow->displayName, NULL, array('transaction_id'=>$transaction_id), NULL, false, $pnData['Extra3']);
+	            } else {
+	            	pnlog( '- Not updating.' );
 	            }
 
                 pnlog( '- Redirecting to order-confirmation' );
