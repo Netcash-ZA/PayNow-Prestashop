@@ -320,6 +320,7 @@ class PayNow extends PaymentModule
         // Price
         $data['info']['p4'] = number_format( sprintf( "%01.2f", $pnAmount ), 2, '.', '' );
 
+        $data['info']['m9'] = $customer->email;
         // Custom data
         $data['info']['m10'] = $return_vars;
         // $data['info']['m10'] = "notify=" . urlencode($data['info']['notify_url']);
