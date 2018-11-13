@@ -145,7 +145,7 @@ function pn_do_transaction() {
         pnlog( 'Check status and update order' );
 
         $sessionid = $pnData['Extra3'];
-        $transaction_id = $pnData['Extra3']; // $pnData['Extra2']
+        $transaction_id = $pnData['Extra2']; // $pnData['Extra2']
 
         if (empty(Context::getContext()->link))
         Context::getContext()->link = new Link();
@@ -157,19 +157,31 @@ function pn_do_transaction() {
 
                 // Is Notify? Only notify posts back this reason
                 $is_notify = isset($pnData['Reason']) && $pnData['Reason'] == 'Success';
+                pnlog( '- Is Notify? ' . ($is_notify ? 'TRUE' : 'FALSE') );
+
+                $order_exists = $cart->OrderExists();
+                pnlog( '- Order Exists? ' . ($order_exists ? 'TRUE' : 'FALSE') );
 
                 $id_cart = (int)$pnData['Extra2'];
                 // Make sure order doesn't exist
-                // if ($cart->OrderExists() === 0) { // See https://github.com/pal/prestashop/blob/master/classes/PaymentModule.php for 'An order has already been placed using this cart' errors
-                if ($is_notify) {
-                	pnlog( '- Updating status.' );
+                // if (!$order_exists) { // See https://github.com/pal/prestashop/blob/master/classes/PaymentModule.php for 'An order has already been placed using this cart' errors
+                // if (!$is_notify) {
+                    pnlog( '- Updating status.' );
 
-	                // Update the purchase status
-	                $paynow->validateOrder($id_cart, _PS_OS_PAYMENT_, (float)$total ,
-	                    $paynow->displayName, NULL, array('transaction_id'=>$transaction_id), NULL, false, $pnData['Extra3']);
-	            } else {
-	            	pnlog( '- Not updating.' );
-	            }
+                    // Update the purchase status
+                    try {
+	                    $updateStatus = $paynow->validateOrder($id_cart, _PS_OS_PAYMENT_, (float)$total ,
+	                        $paynow->displayName, NULL, array('transaction_id'=>$transaction_id), NULL, false, $pnData['Extra3']);
+
+
+                    pnlog( '- Update status....' . $updateStatus );
+	                } catch(\Exception $e) {
+	                	// OOPS
+	                	pnlog( '- Updating exception 0! ' . $e->getMessage() );
+	                }
+                // } else {
+                //     pnlog( '- Not updating.' );
+                // }
 
                 pnlog( '- Redirecting to order-confirmation' );
                 Tools::redirect('index.php?controller=order-confirmation&'.$_SERVER['QUERY_STRING']);
@@ -179,8 +191,15 @@ function pn_do_transaction() {
                 pnlog( '- Failed' );
 
                 // If payment fails, delete the purchase log
-                $paynow->validateOrder((int)$pnData['Extra2'], _PS_OS_ERROR_, (float)$total ,
-                    $paynow->displayName, NULL,array('transaction_id'=>$transaction_id), NULL, false, $pnData['Extra3']);
+                try {
+	                $updateStatus = $paynow->validateOrder((int)$pnData['Extra2'], _PS_OS_ERROR_, (float)$total ,
+	                    $paynow->displayName, NULL,array('transaction_id'=>$transaction_id), NULL, false, $pnData['Extra3']);
+	                } catch(\Exception $e) {
+	                	// OOPS
+	                	pnlog( '- Updating exception 1! ' . $e->getMessage() );
+	                }
+
+	                pnlog( '- Update status....' . $updateStatus );
 
                 pnlog( '- Redirecting to order history (a)' );
                 Tools::redirect('index.php?controller=history');
