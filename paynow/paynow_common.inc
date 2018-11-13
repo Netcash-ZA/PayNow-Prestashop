@@ -242,94 +242,96 @@ function pnValidData( $pnParamString = '', $pnData, $pnProxy = null )
     pnlog( 'Params = '. $pnParamString );
 
     // Use cURL (if available)
-    if( defined( 'PN_CURL' ) )
-    {
-        // Variable initialization
-        $url = 'https://'. $pnHost .'/transactionstatus';
+    // if( defined( 'PN_CURL' ) )
+    // {
+    //     // Variable initialization
+    //     $url = 'https://'. $pnHost .'/transactionstatus';
 
-        pnlog( 'curl_init' );
+    //     pnlog( 'curl_init' );
 
-        // Create default cURL object
-        $ch = curl_init();
+    //     // Create default cURL object
+    //     $ch = curl_init();
 
-        // Set cURL options - Use curl_setopt for freater PHP compatibility
-        // Base settings
-        curl_setopt( $ch, CURLOPT_USERAGENT, PN_USER_AGENT );  // Set user agent
-        curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );      // Return output as string rather than outputting it
-        curl_setopt( $ch, CURLOPT_HEADER, false );             // Don't include header in output
-        curl_setopt( $ch, CURLOPT_SSL_VERIFYHOST, 2 );
-        curl_setopt( $ch, CURLOPT_SSL_VERIFYPEER, false );
+    //     // Set cURL options - Use curl_setopt for freater PHP compatibility
+    //     // Base settings
+    //     curl_setopt( $ch, CURLOPT_USERAGENT, PN_USER_AGENT );  // Set user agent
+    //     curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );      // Return output as string rather than outputting it
+    //     curl_setopt( $ch, CURLOPT_HEADER, false );             // Don't include header in output
+    //     curl_setopt( $ch, CURLOPT_SSL_VERIFYHOST, 2 );
+    //     curl_setopt( $ch, CURLOPT_SSL_VERIFYPEER, false );
 
-        // Standard settings
-        curl_setopt( $ch, CURLOPT_URL, $url );
-        curl_setopt( $ch, CURLOPT_POST, true );
-        curl_setopt( $ch, CURLOPT_POSTFIELDS, $pnParamString );
-        curl_setopt( $ch, CURLOPT_TIMEOUT, PN_TIMEOUT );
-        if( !empty( $pnProxy ) )
-            curl_setopt( $ch, CURLOPT_PROXY, $proxy );
+    //     // Standard settings
+    //     curl_setopt( $ch, CURLOPT_URL, $url );
+    //     curl_setopt( $ch, CURLOPT_POST, true );
+    //     curl_setopt( $ch, CURLOPT_POSTFIELDS, $pnParamString );
+    //     curl_setopt( $ch, CURLOPT_TIMEOUT, PN_TIMEOUT );
+    //     if( !empty( $pnProxy ) )
+    //         curl_setopt( $ch, CURLOPT_PROXY, $proxy );
 
-        // Execute CURL
-        $response = curl_exec( $ch );
-        curl_close( $ch );
-    }
-    // Use fsockopen
-    else
-    {
-        // Variable initialization
-        $header = '';
-        $res = '';
-        $headerDone = false;
+    //     // Execute CURL
+    //     $response = curl_exec( $ch );
+    //     curl_close( $ch );
+    // }
+    // // Use fsockopen
+    // else
+    // {
+    //     // Variable initialization
+    //     $header = '';
+    //     $res = '';
+    //     $headerDone = false;
 
-        // Construct Header
-        $header = "POST /transactionstatus HTTP/1.0\r\n";
-        $header .= "Host: ". $pnHost ."\r\n";
-        $header .= "User-Agent: ". PN_USER_AGENT ."\r\n";
-        $header .= "Content-Type: application/x-www-form-urlencoded\r\n";
-        $header .= "Content-Length: " . strlen( $pnParamString ) . "\r\n\r\n";
+    //     // Construct Header
+    //     $header = "POST /transactionstatus HTTP/1.0\r\n";
+    //     $header .= "Host: ". $pnHost ."\r\n";
+    //     $header .= "User-Agent: ". PN_USER_AGENT ."\r\n";
+    //     $header .= "Content-Type: application/x-www-form-urlencoded\r\n";
+    //     $header .= "Content-Length: " . strlen( $pnParamString ) . "\r\n\r\n";
 
-        pnlog( 'fsockopen' );
+    //     pnlog( 'fsockopen' );
 
-        // Connect to server
-        $socket = fsockopen( 'ssl://'. $pnHost, 443, $errno, $errstr, PN_TIMEOUT );
+    //     // Connect to server
+    //     $socket = fsockopen( 'ssl://'. $pnHost, 443, $errno, $errstr, PN_TIMEOUT );
 
-        // Send command to server
-        fputs( $socket, $header . $pnParamString );
+    //     // Send command to server
+    //     fputs( $socket, $header . $pnParamString );
 
-        // Read the response from the server
-        while( !feof( $socket ) )
-        {
-            $line = fgets( $socket, 1024 );
+    //     // Read the response from the server
+    //     while( !feof( $socket ) )
+    //     {
+    //         $line = fgets( $socket, 1024 );
 
-            // Check if we are finished reading the header yet
-            if( strcmp( $line, "\r\n" ) == 0 )
-            {
-                // read the header
-                $headerDone = true;
-            }
-            // If header has been processed
-            else if( $headerDone )
-            {
-                // Read the main response
-                $response .= $line;
-            }
-        }
+    //         // Check if we are finished reading the header yet
+    //         if( strcmp( $line, "\r\n" ) == 0 )
+    //         {
+    //             // read the header
+    //             $headerDone = true;
+    //         }
+    //         // If header has been processed
+    //         else if( $headerDone )
+    //         {
+    //             // Read the main response
+    //             $response .= $line;
+    //         }
+    //     }
+    // }
 
-    }
-
+    $response = [];
+    $responseArray = $pnData;
     pnlog( "Response:\n". print_r( $response, true ) );
 
     // Interpret Response
     // $lines = explode( "\r\n", $response );
     // $verifyResult = trim( $lines[0] );
 
-    if( $pnData['Method'] == 'CreditCard' ) {
-        $responseArray = json_decode($response, true);
-        pnlog( 'SagePayNow RequestTrace Response: '. print_r( $responseArray, true ) );
-    } else {
+    // if( $pnData['Method'] == 'CreditCard' || $pnData['Method'] == 1 ) {
+    // if( $pnData['Method'] == 'CreditCard' ) {
+    //     $responseArray = json_decode($response, true);
+    //     pnlog( 'SagePayNow RequestTrace Response: '. print_r( $responseArray, true ) );
+    // } else {
         // This is temporary.
         // Cannot verify via RequestTrace for Retail/EFT at this stage.
-        $responseArray = $pnData;
-    }
+    //    $responseArray = $pnData;
+    // }
     $valid = true;
 
     if( $responseArray["Amount"] !== $pnData["Amount"] ) {
