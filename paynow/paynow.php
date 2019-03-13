@@ -62,6 +62,7 @@ class PayNow extends PaymentModule
         if ( !parent::install()
             OR !$this->registerHook('payment')
             OR !$this->registerHook('paymentReturn')
+            OR !Configuration::updateValue('SAGEPAY_ACCOUNT_NUMBER', '')
             OR !Configuration::updateValue('SAGEPAY_SERVICE_KEY', '')
             OR !Configuration::updateValue('SAGEPAY_LOGS', '1')
             // OR !Configuration::updateValue('SAGEPAY_MODE', 'test')
@@ -82,6 +83,7 @@ class PayNow extends PaymentModule
         unlink(dirname(__FILE__).'/../../cache/class_index.php');
         return ( parent::uninstall()
             AND Configuration::deleteByName('SAGEPAY_SERVICE_KEY')
+            AND Configuration::deleteByName('SAGEPAY_ACCOUNT_NUMBER')
             AND Configuration::deleteByName('SAGEPAY_LOGS')
             // AND Configuration::deleteByName('SAGEPAY_MODE')
             AND Configuration::deleteByName('SAGEPAY_PAYNOW_TEXT')
@@ -118,13 +120,46 @@ class PayNow extends PaymentModule
                  Configuration::updateValue( 'SAGEPAY_PAYNOW_ALIGN', $paynow_align );
             }
 
-            if( ( $service_key = Tools::getValue( 'paynow_service_key' ) ) AND preg_match('/[0-9]/', $service_key ) )
-            {
-                Configuration::updateValue( 'SAGEPAY_SERVICE_KEY', $service_key );
+            $account_number = Tools::getValue( 'paynow_account_number' );
+            $service_key = Tools::getValue( 'paynow_service_key' );
+
+            $pnErrors = [];
+            if( $account_number && $service_key ) {
+                if(class_exists('SoapClient')) {
+                    // We can continue, SOAP is installed
+
+                    require_once(dirname(__FILE__).'/PayNowValidator.php');
+                    $Validator = new SagePay\PayNowValidator();
+                    $Validator->setVendorKey('94cdf2e6-f2e7-4c91-ad34-da5684bfbd6f');
+
+                    try {
+                        $result = $Validator->validate_paynow_service_key($account_number, $service_key);
+
+                        if( $result !== true ) {
+                            $pnErrors[] = (isset($result[$service_key]) ? $result[$service_key] : '<strong>Account Number:</strong> ' . $result) . ' ';
+                            $pnErrors[] = (isset($result[$service_key]) ? $result[$service_key] : '<strong>Service Key</strong> could not be validated.') . ' ';
+                        } else {
+
+                            // Success
+                            Configuration::updateValue( 'SAGEPAY_ACCOUNT_NUMBER', $account_number );
+                            Configuration::updateValue( 'SAGEPAY_SERVICE_KEY', $service_key );
+
+                        }
+                    } catch(\Exception $e) {
+                        $pnErrors[] = $e->getMessage() . ' ';
+                    }
+                } else {
+                    $pnErrors[] = 'Cannot validate. Please install the PHP SOAP extension.';
+                }
+            } else {
+                $pnErrors[] = 'Please specify an account number and service key.</div>';
             }
-            else
-            {
-                $errors[] = '<div class="warning warn"><h3>'.$this->l( 'Service key is invalid' ).'</h3></div>';
+
+            if(!empty($pnErrors)) {
+                $pnErrors[] = "Please contact your Sage Pay Account manager on 0861 338 338 for assistance.";
+                foreach ($pnErrors as $error) {
+                    $errors[] = "<div class='warning warn'>{$error}</div>";
+                }
             }
 
             /* $mode = ( Tools::getValue( 'paynow_mode' ) == 'live' ? 'live' : 'test' ) ;
@@ -190,7 +225,14 @@ class PayNow extends PaymentModule
         <form action="'.$_SERVER['REQUEST_URI'].'" method="post">
           <fieldset>
           <legend><img src="'.__PS_BASE_URI__.'modules/paynow/logo.png" />'.$this->l('Settings').'</legend>
-            <p>'.$this->l('You can find your Service Key on your PayNow account.').'</p>
+            <p>'.$this->l('You can find your Account Number in your Sage Pay Now account.').'</p>
+            <label>
+              '.$this->l('Account Number').'
+            </label>
+            <div class="margin-form">
+              <input type="text" name="paynow_account_number" value="'.trim(Tools::getValue('paynow_account_number', Configuration::get('SAGEPAY_ACCOUNT_NUMBER'))).'" />
+            </div>
+            <p>'.$this->l('You can find your Service Key in your Sage Pay Now account.').'</p>
             <label>
               '.$this->l('Service Key').'
             </label>
