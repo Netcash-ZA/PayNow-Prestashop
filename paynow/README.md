@@ -43,22 +43,22 @@ A. Netcash Account Configuration Steps:
 
 Netcash Pay Now Callback
 
-6. Choose the following URLs for your Notify, Redirect, Accept and Decline URLs:
+10. Choose the following URLs for your Notify, Redirect, Accept and Decline URLs:
 	http://www.your_domain_name.co.za/modules/paynow/paynow_callback.php
 
 Netcash Pay Now Plugin Installation and Activation
 
-7. Upload the contents of the downloaded ZIP archive to your site.
+11. Upload the contents of the downloaded ZIP archive to your site.
 	In _/modules/_ there should be a _paynow/_ folder.
 	No files should be overriden.
-8. Login to your PrestaShop website as admin
+12. Login to your PrestaShop website as admin
 
 PrestaShop Configuration
 
-9. Select "Modules" > "Modules" in the admin menu.
-10. Look for or search for "PayNow" and click "Install".
-11. Put in you Service Key and click "Save".
-12. Turn off debugging if you're in a production/live environment.
+13. Select "Modules" > "Modules" in the admin menu.
+14. Look for or search for "PayNow" and click "Install".
+15. Put in you Service Key and click "Save".
+16. Turn off debugging if you're in a production/live environment.
 
 
 Revision History
