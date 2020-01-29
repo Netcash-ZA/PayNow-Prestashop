@@ -1,11 +1,11 @@
-Sage Pay Now PrestaShop Credit Card Payment Module 2.0.0
+Netcash Pay Now PrestaShop Credit Card Payment Module 2.0.0
 =========================================================
 
 Introduction
 ------------
 PrestaShop is an open source e-commerce platform.
 
-This is the Sage Pay Now module which gives you the ability to take credit card transactions online.
+This is the Netcash Pay Now module which gives you the ability to take credit card transactions online.
 
 Download Instructions
 -------------------------
@@ -18,25 +18,24 @@ Configuration
 Prerequisites:
 
 You will need:
-* Sage Pay Now login credentials
-* Sage Pay Now Service key
+* Netcash login credentials
+* Pay Now Service key
 * PrestaShop admin login credentials
 
-Sage Pay Now Gateway Server Configuration Steps:
 
-1. Log into your Sage Pay Now Gateway Server configuration page:
-	https://merchant.sagepay.co.za/SiteLogin.aspx
+1. Log into your Netcash account:
+	https://merchant.Netcash.co.za/SiteLogin.aspx
 2. Go to Account / Profile
-3. Click Sage Connect
+3. Click NetConnector
 4. Click Pay Now
 5. Make a note of your Service key
 
-Sage Pay Now Callback
+Netcash Pay Now Callback
 
 6. Choose the following URLs for your Notify, Redirect, Accept and Decline URLs:
 	http://www.your_domain_name.co.za/modules/paynow/paynow_callback.php
 
-Sage Pay Now Plugin Installation and Activation
+Netcash Pay Now Plugin Installation and Activation
 
 7. Upload the contents of the downloaded ZIP archive to your site.
 	In _/modules/_ there should be a _paynow/_ folder.
@@ -80,4 +79,4 @@ Turn OFF debugging when you are in a production environment.
 
 We welcome your feedback and suggestions.
 
-Please do not hesitate to contact Sage Pay if you have any suggestions or comments or log an issue on GitHub.
+Please do not hesitate to contact Netcash if you have any suggestions or comments or log an issue on GitHub.
