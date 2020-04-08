@@ -130,7 +130,7 @@ class PayNow extends PaymentModule
 
                     require_once(dirname(__FILE__).'/PayNowValidator.php');
                     $Validator = new SagePay\PayNowValidator();
-                    $Validator->setVendorKey('94cdf2e6-f2e7-4c91-ad34-da5684bfbd6f');
+                    $Validator->setVendorKey('de2c157a-04fb-4cca-beb5-8aa20f686ac6');
 
                     try {
                         $result = $Validator->validate_paynow_service_key($account_number, $service_key);
